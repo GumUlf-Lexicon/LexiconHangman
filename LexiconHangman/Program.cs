@@ -32,39 +32,24 @@ namespace LexiconHangman
 			// Start the game
 			int allowedWrongGuessesLeft = maxWrongGuesses;
 			bool victory = false;
-			Console.WriteLine("Time to play Hangman!");
-			Console.WriteLine("  (Swedish words)");
-
+			string message = null;
 
 			// Main loop. Runs until the number of wrong guesses are
 			// equal to maxWrongGuesses, or the user has won.
 			while(allowedWrongGuessesLeft > 0 && !victory)
 			{
 
-				// Print the current hangman figure
-				PrintHangman(maxWrongGuesses - allowedWrongGuessesLeft);
-
-
-				if(wrongLetters.Length > 0)
-				{
-					// Only show the line with wrong letters if there are any.
-					Console.WriteLine();
-					Console.WriteLine($"Wrong letters: {wrongLetters}");
-				}
-
-				// Write out the correctly guessed letter in the word
-				// so far. Letters yet not correctly guessed are shown
-				// as '_' (underscore). A space is used between each
-				// letter to make it easier to read.
-				Console.WriteLine();
-				Console.WriteLine(string.Join(" ", correctLetters));
+				// Print out the "game board"
+				int wrongGuessesMade = maxWrongGuesses - allowedWrongGuessesLeft;
+				WriteInfo(wrongGuessesMade, correctLetters, wrongLetters, message);
+				message = null;
 
 				// Get the guess from the user 
 				// The returned value is at least one letter long
 				// and contains only letters, so no check for that
 				// is needed.
-				Console.WriteLine();
-				string guess = GetGuessFromUser(allowedWrongGuessesLeft).ToUpper();
+				string guessMessage = "Enter your guess (" + allowedWrongGuessesLeft + " left): ";
+				string guess = GetGuessFromUser(guessMessage).ToUpper();
 
 				if(guess.Length > 1 && guess.Equals(word))
 				{
@@ -74,7 +59,7 @@ namespace LexiconHangman
 				else if(guess.Length > 1)
 				{
 					// The player guesses the wrong word
-					Console.WriteLine($"Sorry, {guess} is not the correct word!");
+					message = $"Sorry, {guess} is not the correct word!";
 					allowedWrongGuessesLeft--;
 				}
 				else if(Array.IndexOf(correctLetters, guess[0]) >= 0 || wrongLetters.ToString().Contains(guess))
@@ -83,7 +68,7 @@ namespace LexiconHangman
 					// in wrongLetters. The user is notified that it is already
 					// guessed. The remaining allowed wrong guesses are not 
 					// changed.
-					Console.WriteLine($"You have already guessed {guess}!");
+					message = $"You have already guessed {guess}!";
 				}
 				else if(word.Contains(guess))
 				{
@@ -108,34 +93,23 @@ namespace LexiconHangman
 					// The player guessed a letter that is not in the word, they
 					// are notified about that, and the remaining allowed wrong
 					// guesses is decreased by one.
-					Console.WriteLine($"Sorry, '{guess}' is not in the word!");
+					message = $"Sorry, '{guess}' is not in the word!";
 					_ = wrongLetters.Append(guess);
 					allowedWrongGuessesLeft--;
 				}
 			}
 
 			// The game is over, time to present the result
-			Console.Clear();
-			Console.WriteLine();
-			PrintHangman(maxWrongGuesses - allowedWrongGuessesLeft);
+			WriteInfo(maxWrongGuesses - allowedWrongGuessesLeft, correctLetters, wrongLetters, message);
 
-			Console.WriteLine();
 			if(victory)
 			{
 				// The player got the word right and won the game.
-				Console.WriteLine($"Wrong letters: {wrongLetters}");
-				Console.WriteLine();
-				Console.WriteLine(string.Join(" ", word.ToCharArray()));
-				Console.WriteLine();
 				Console.WriteLine("Congratulations, you won!");
 			}
 			else
 			{
 				// The player was not able to guess the right word and lost.
-				Console.WriteLine($"Wrong letters: {wrongLetters}");
-				Console.WriteLine();
-				Console.WriteLine(string.Join(" ", correctLetters));
-				Console.WriteLine();
 				Console.WriteLine("Sorry, you lost!");
 				Console.WriteLine($"The correct word is \"{word}\"!");
 			}
@@ -155,8 +129,48 @@ namespace LexiconHangman
 			return word;
 		}
 
+		private static void WriteInfo(
+			int numberOfWrongGuesses, 
+			char[] correctLetters, 
+			StringBuilder wrongLetters, 
+			string message)
+		{
+			Console.Clear();
+
+			// Print header
+			Console.WriteLine("Time to play Hangman!");
+			Console.WriteLine("  (Swedish words)");
+			Console.WriteLine();
+
+			// Print the current hangman figure
+			PrintHangman(numberOfWrongGuesses);
+
+			if(wrongLetters.Length > 0)
+			{
+				// Only show the line with wrong letters if there are any.
+				Console.WriteLine();
+				Console.WriteLine($"Wrong letters: {wrongLetters}");
+			}
+
+			// Write out the correctly guessed letter in the word
+			// so far. Letters yet not correctly guessed are shown
+			// as '_' (underscore). A space is used between each
+			// letter to make it easier to read.
+			Console.WriteLine();
+			Console.WriteLine(string.Join(" ", correctLetters));
+			Console.WriteLine();
+
+			// Print out message about for example wrongly guess letter
+			if(!string.IsNullOrWhiteSpace(message))
+			{
+				Console.WriteLine(message);
+				Console.WriteLine();
+			}
+		}
+
+
 		// Get guess from user
-		private static string GetGuessFromUser(int allowedWrongGuessesLeft)
+		private static string GetGuessFromUser(string message)
 		{
 			string guess;
 
@@ -165,7 +179,7 @@ namespace LexiconHangman
 			// recieved from the user
 			do
 			{
-				Console.Write("Enter your guess ({0} left): ", allowedWrongGuessesLeft);
+				Console.Write(message);
 				guess = Console.ReadLine().Trim();
 
 			} while(string.IsNullOrWhiteSpace(guess) || !guess.All(char.IsLetter));
