@@ -129,6 +129,7 @@ namespace LexiconHangman
 			return word;
 		}
 
+		// Write out the "game board" and game state
 		private static void WriteInfo(
 			int numberOfWrongGuesses, 
 			char[] correctLetters, 
