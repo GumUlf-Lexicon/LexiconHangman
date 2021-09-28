@@ -7,7 +7,7 @@ namespace LexiconHangman
 	class Program
 	{
 
-
+		// Maximun allowed wrong guesses. Do not change this value!
 		public const int maxWrongGuesses = 10;
 
 		static void Main()
@@ -33,6 +33,7 @@ namespace LexiconHangman
 			int allowedWrongGuessesLeft = maxWrongGuesses;
 			bool victory = false;
 			Console.WriteLine("Time to play Hangman!");
+			Console.WriteLine("  (Swedish words)");
 
 
 			// Main loop. Runs until the number of wrong guesses are
@@ -177,17 +178,16 @@ namespace LexiconHangman
 		private static void PrintHangman(int numberOfWrongGuesses)
 		{
 
-
+			// The hangman figure 
+			//
 			//    ________      0
-			//    │ ╱    ┋      1
-			//    │╱     O      2
-			//    │     ╲│╱     3
+			//    │ /    |      1
+			//    │/     O      2
+			//    │     \│/     3
 			//    │      │      4
-			//    │     ╱ ╲     5
+			//    │     / \     5
 			//    │             6
 			//────┴───────────  7
-
-
 
 			// Create the different lines depending on how many wrong guesses
 			// have been done.
