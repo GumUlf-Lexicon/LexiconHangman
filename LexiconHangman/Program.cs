@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace LexiconHangman
 {
@@ -9,12 +10,50 @@ namespace LexiconHangman
 
 		// Maximun allowed wrong guesses. Do not change this value!
 		public const int maxWrongGuesses = 10;
+		public readonly static Random rand = new Random();
 
 		static void Main()
 		{
-			// Get a random word from the built in list of words
-			string word = GetWord().ToUpper();
 
+			// TODO: Add menu
+			// Ability to chose language
+			// Ability to enter file
+			// Handling of file errors
+
+
+
+			// Get a random word from file, or built in list as a backup
+			string word = null;
+			{
+				bool wordOK;
+				try
+				{
+					word = GetWordFromFile("svenska_ord\\svenska_ord.csv").ToUpper();
+					wordOK = true;
+				}
+				catch
+				{
+					// Flag that a word could not be gotten from file
+					wordOK = false;
+				}
+
+				// Get a random word from the built in list of words
+				// if getting a word from the file fails
+				if(!wordOK)
+				{
+					word = GetWord().ToUpper();
+				}
+			}
+
+			// Start the game
+			PlayHangman(word);
+
+
+		}
+
+		// The game itself
+		private static void PlayHangman(string word)
+		{
 			// Create an array with chars to present the correct guessed
 			// letters and thier position in the word. Letters not yet 
 			// correctly guessed are represented by '_' (underscore).
@@ -55,6 +94,7 @@ namespace LexiconHangman
 				{
 					// The player guessed the correct word
 					victory = true;
+					correctLetters = word.ToCharArray();
 				}
 				else if(guess.Length > 1)
 				{
@@ -76,8 +116,8 @@ namespace LexiconHangman
 					int position = word.IndexOf(guess);
 					while(position >= 0)
 					{
-						// Put the correct guess letter in the right positions in
-						// correctLetter
+						// Put the correct guessed letter in the right positions in
+						// correctLetters
 						correctLetters[position] = guess[0];
 						position = word.IndexOf(guess, position + 1);
 					}
@@ -86,6 +126,7 @@ namespace LexiconHangman
 					{
 						// The whole word is correctly guessed
 						victory = true;
+						correctLetters = word.ToCharArray();
 					}
 				}
 				else
@@ -123,17 +164,36 @@ namespace LexiconHangman
 			string[] words = new string[] { "blomma", "höstglöd", "bo", "å", "klippa", "simma", "blå", "tidning", "längta", "stor" };
 
 			// Get a random word from the list
-			var rand = new Random();
+
 			string word = words[rand.Next(words.Length)];
 
 			return word;
 		}
 
+		// Get a random word from a text file with comma separted values.
+		private static string GetWordFromFile(string file)
+		{
+			try
+			{
+				// TODO: Validate word
+				string[] words = File.ReadAllText(file).Split(',');
+				string word = words[rand.Next(words.Length)];
+				return word;
+			}
+			catch
+			{
+				// TODO: Log error
+				// Just rethrowing the exception for now
+				throw;
+			}
+		}
+
+
 		// Write out the "game board" and game state
 		private static void WriteInfo(
-			int numberOfWrongGuesses, 
-			char[] correctLetters, 
-			StringBuilder wrongLetters, 
+			int numberOfWrongGuesses,
+			char[] correctLetters,
+			StringBuilder wrongLetters,
 			string message)
 		{
 			Console.Clear();

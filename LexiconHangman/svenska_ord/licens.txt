@@ -1,0 +1,12 @@
+svenska_ord.csv is constructed with words from the "Swedish Kelly-list" by Ulf Andersson, and is used under the licens "CC BY 4.0".
+svenska_ord.csv is shared under the licens "CC BY 4.0"
+
+===
+
+Swedish Kelly-list (Swedish-Kelly_M3_CEFR.xls)
+CC BY 4.0
+
+Kilgarriff, Adam; Charalabopoulou, Frieda; Gavrilidou, Maria; Johannessen, Janne Bondi; Khalil, Saussan; Kokkinakis, Sofie Johansson; Lew, Robert; Sharoff, Serge; Vadlapudi, Ravikiran & Volodina, Elena. 2014. Corpus-based vocabulary lists for language learners for nine languages. Language Resources and Evaluation, 48:121–163, DOI 10.1007/s10579-013-9251-2.
+
+https://spraakbanken.gu.se/resurser/kelly
+https://svn.spraakdata.gu.se/sb-arkiv/pub/lexikon/kelly/Swedish-Kelly_M3_CEFR.xls
